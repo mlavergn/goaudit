@@ -19,13 +19,15 @@ const (
 )
 
 // Browser type
-type Browser int
+type Browser string
 
 // BrowserChrome const
 const (
-	BrowserChrome Browser = iota
-	BrowserSafari
-	BrowserUnknown
+	BrowserChrome  Browser = "Chrome"
+	BrowserSafari          = "Safari"
+	BrowserEdge            = "Edge"
+	BrowserIE              = "IE"
+	BrowserUnknown         = "Unknown"
 )
 
 // Device type
@@ -37,6 +39,7 @@ const (
 	DeviceIPhone
 	DeviceMac
 	DeviceAndroid
+	DeviceWindows
 )
 
 // ClientPlatform type
@@ -63,8 +66,29 @@ func (id *ClientPlatform) parseOS(platform []string) OS {
 		default:
 			return OSLinux
 		}
+	case "Windows":
+		return OSWindows
 	}
 	return OSUnknown
+}
+
+func (id *ClientPlatform) parseBrowser(moz13 string) Browser {
+	if strings.Contains(moz13, "Chrome/") {
+		return BrowserChrome
+	}
+	if strings.Contains(moz13, "Safari/") {
+		return BrowserSafari
+	}
+	if strings.Contains(moz13, "CriOS/") {
+		return BrowserChrome
+	}
+	if strings.Contains(moz13, "Edge/") {
+		return BrowserEdge
+	}
+	if strings.Contains(moz13, "Trident/") {
+		return BrowserIE
+	}
+	return BrowserUnknown
 }
 
 // NewClientPlatform init
@@ -78,6 +102,7 @@ func NewClientPlatform(userAgent string) ClientPlatform {
 	pcomp := strings.Split(platform, ";")
 
 	id.OS = string(id.parseOS(pcomp))
+	id.Browser = string(id.parseBrowser(userAgent[13:]))
 
 	return id
 }
