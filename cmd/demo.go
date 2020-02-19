@@ -1,8 +1,9 @@
 package main
 
 import (
-	"goaudit"
 	"log"
+
+	"github.com/mlavergn/goaudit"
 )
 
 func main() {

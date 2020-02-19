@@ -8,23 +8,31 @@
 
 .PHONY: test
 
-GOPATH = "${PWD}"
+VERSION := 0.1.0
+
+ver:
+	@sed -i '' 's/^const Version = "[0-9]\{1,3\}.[0-9]\{1,3\}.[0-9]\{1,3\}"/const Version = "${VERSION}"/' audit.go
 
 lint:
-	GOPATH=${GOPATH} ~/go/bin/golint .
+	~/go/bin/golint .
 
 build:
-	GOPATH=${GOPATH} go build ./...
+	go build ./...
 
 demo: build
-	GOPATH=${GOPATH} go build -o demo cmd/demo.go
+	go build -o demo cmd/demo.go
 	./demo
 
 clean:
 	rm -f demo
 
 test: build
-	GOPATH=${GOPATH} go test -v ./src/...
+	go test -v ./...
 
 github:
 	open "https://github.com/mlavergn/goaudit"
+
+release:
+	zip -r goaudit.zip LICENSE README.md Makefile cmd *.go go.mod
+	hub release create -m "${VERSION} - Go Audit" -a goaudit.zip -t master "v${VERSION}"
+	open "https://github.com/mlavergn/goaudit/releases"

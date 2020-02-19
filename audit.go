@@ -6,6 +6,9 @@ import (
 	"time"
 )
 
+// Version export
+const Version = "0.1.0"
+
 // ClientAudit type
 type ClientAudit struct {
 	Timestamp int64  `json:"timestamp"`
