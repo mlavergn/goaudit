@@ -7,7 +7,7 @@ import (
 )
 
 // Version export
-const Version = "0.1.0"
+const Version = "0.2.0"
 
 // ClientAudit type
 type ClientAudit struct {
@@ -20,12 +20,6 @@ type ClientAudit struct {
 	Proxy     string `json:"forwarded"`
 	XHR       string `json:"xhr"`
 	CORS      string `json:"cors"`
-}
-
-// JSON helper
-func (id *ClientAudit) JSON() []byte {
-	result, _ := json.Marshal(id)
-	return result
 }
 
 // NewClientAudit init
@@ -43,4 +37,23 @@ func NewClientAudit(req *http.Request) ClientAudit {
 	}
 
 	return id
+}
+
+// JSON helper returns byte encoded JSON data
+func (id *ClientAudit) JSON() []byte {
+	result, _ := json.Marshal(id)
+	return result
+}
+
+// String helper returns JSON data as a string
+func (id *ClientAudit) String() string {
+	return string(id.JSON())
+}
+
+// Map helper returns data as a map
+func (id *ClientAudit) Map() map[string]interface{} {
+	raw := id.JSON()
+	var result map[string]interface{}
+	json.Unmarshal(raw, &result)
+	return result
 }
